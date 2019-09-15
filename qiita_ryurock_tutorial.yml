@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: cf tutorial stack
+Parameters:
+  Prefix:
+    Type: String
+    Default: testing
+    Description: Prefix Name
+Resources:
+  Ec2SecurityGroupApp:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupName: !Sub "${Prefix}_${ServiceName}_app"
+      GroupDescription: "web server security group"
+      VpcId:
+        "{your VPCID}"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: "0.0.0.0./0"
+      Tags:
+        - Key: Name
+          Value: !Sub "${Prefix}_${ServerName}_app"
+  Ec2InstanceServer:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      AvailabilityZone: "ap-northeast-1c"
+      ImageId: "ami-06cd52961ce9f0d85"
+      InstanceType: "t2.micro"
+      KeyName: "your"
+      SecurityGroupIds:
+        - !Ref Ec2SecurityGroupApp
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 8
+            VoluneType: gp2
+      Tags:
+        - Key: Name
+          Value: !Sub "${Prefix}_${ServiceName}_app"
