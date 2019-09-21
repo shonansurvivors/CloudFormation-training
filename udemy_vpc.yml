@@ -8,7 +8,7 @@ Resources:
         -
           Key: Name
           Value: cf-vpc
-  CfSubnetExternal:
+  CfSubnetPublic:
     Type: AWS::EC2::Subnet
     DependsOn: CfVPC
     Properties:
@@ -18,8 +18,8 @@ Resources:
       AvailabilityZone: "ap-northeast-1a"
       Tags:
         - Key: Name
-          Value: cf-subnet-external
-  CfSubnetInternal:
+          Value: cf-public
+  CfSubnetPrivate:
     Type: AWS::EC2::Subnet
     DependsOn: CfVPC
     Properties:
@@ -29,45 +29,45 @@ Resources:
       AvailabilityZone: "ap-northeast-1c"
       Tags:
         - Key: Name
-          Value: cf-subnet-internal
+          Value: cf-private
   CfInternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
         - Key: Name
-          Value: cf-igw
+          Value: cf
   AttachIgw:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       InternetGatewayId : !Ref CfInternetGateway
       VpcId: !Ref CfVPC
-  CfRouteTableExternal:
+  CfRouteTablePublic:
     Type: AWS::EC2::RouteTable
     Properties:
       VpcId: !Ref CfVPC
       Tags:
         - Key: Name
-          Value: cf-route-table-external
-  AssocciateRouteTableExternal:
+          Value: cf-public
+  AssocciateRouteTablePublic:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      RouteTableId: !Ref CfRouteTableExternal
-      SubnetId: !Ref CfSubnetExternal
-  CreateRouteExternal:
+      RouteTableId: !Ref CfRouteTablePublic
+      SubnetId: !Ref CfSubnetPublic
+  CreateRoutePublic:
     Type: AWS::EC2::Route
     Properties:
-      RouteTableId: !Ref CfRouteTableExternal
+      RouteTableId: !Ref CfRouteTablePublic
       DestinationCidrBlock: '0.0.0.0/0'
       GatewayId: !Ref CfInternetGateway
-  CfRouteTableInternal:
+  CfRouteTablePrivate:
     Type: AWS::EC2::RouteTable
     Properties:
       VpcId: !Ref CfVPC
       Tags:
         - Key: Name
-          Value: cf-route-table-internal
-  AssocciateRouteTableInternal:
+          Value: cf-private
+  AssocciateRouteTablePrivate:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      RouteTableId: !Ref CfRouteTableInternal
-      SubnetId: !Ref CfSubnetInternal
+      RouteTableId: !Ref CfRouteTablePrivate
+      SubnetId: !Ref CfSubnetPrivate
