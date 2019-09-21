@@ -41,3 +41,27 @@ Resources:
     Properties:
       InternetGatewayId : !Ref CfInternetGateway
       VpcId: !Ref CfVPC
+  CfRouteTableExternal:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref CfVPC
+      Tags:
+        - Key: Name
+          Value: cf-route-table-external
+  AssocciateRouteTableExternal:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref CfRouteTableExternal
+      SubnetId: !Ref CfSubnetExternal
+  CfRouteTableInternal:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref CfVPC
+      Tags:
+        - Key: Name
+          Value: cf-route-table-internal
+  AssocciateRouteTableInternal:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref CfRouteTableInternal
+      SubnetId: !Ref CfSubnetInternal
