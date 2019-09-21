@@ -30,3 +30,14 @@ Resources:
       Tags:
         - Key: Name
           Value: cf-subnet-internal
+  CfInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: cf-igw
+  AttachIgw:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId : !Ref CfInternetGateway
+      VpcId: !Ref CfVPC
