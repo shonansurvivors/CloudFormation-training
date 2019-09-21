@@ -8,3 +8,13 @@ Resources:
         -
           Key: Name
           Value: cf-vpc
+  CfSubnetExternal:
+    Type: AWS::EC2::Subnet
+    DependsOn: CfVPC
+    Properties:
+      CidrBlock: 10.1.5.0/24
+      MapPublicIpOnLaunch: 'true'
+      VpcId: !Ref CfVPC
+      Tags:
+        - Key: Name
+          Value: cf-subnet-external
