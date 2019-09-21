@@ -53,6 +53,12 @@ Resources:
     Properties:
       RouteTableId: !Ref CfRouteTableExternal
       SubnetId: !Ref CfSubnetExternal
+  CreateRouteExternal:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref CfRouteTableExternal
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId: !Ref CfInternetGateway
   CfRouteTableInternal:
     Type: AWS::EC2::RouteTable
     Properties:
