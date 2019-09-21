@@ -18,3 +18,13 @@ Resources:
       Tags:
         - Key: Name
           Value: cf-subnet-external
+  CfSubnetInternal:
+    Type: AWS::EC2::Subnet
+    DependsOn: CfVPC
+    Properties:
+      CidrBlock: 10.1.10.0/24
+      MapPublicIpOnLaunch: 'false'
+      VpcId: !Ref CfVPC
+      Tags:
+        - Key: Name
+          Value: cf-subnet-internal
