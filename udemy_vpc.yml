@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: 2010-09-09
 Resources:
   CfVPC:
     Type: AWS::EC2::VPC
@@ -12,9 +12,9 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       CidrBlock: 10.1.5.0/24
-      MapPublicIpOnLaunch: 'true'
+      MapPublicIpOnLaunch: true
       VpcId: !Ref CfVPC
-      AvailabilityZone: "ap-northeast-1a"
+      AvailabilityZone: ap-northeast-1a
       Tags:
         - Key: Name
           Value: cf-public
@@ -22,9 +22,9 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       CidrBlock: 10.1.10.0/24
-      MapPublicIpOnLaunch: 'false'
+      MapPublicIpOnLaunch: false
       VpcId: !Ref CfVPC
-      AvailabilityZone: "ap-northeast-1c"
+      AvailabilityZone: ap-northeast-1c
       Tags:
         - Key: Name
           Value: cf-private
