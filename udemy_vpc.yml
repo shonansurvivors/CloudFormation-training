@@ -75,8 +75,8 @@ Resources:
   SecurityGroupPublicServer:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: public-server
-      GroupDescription: public-server
+      GroupName: cf-public-server
+      GroupDescription: cf-public-server
       VpcId: !Ref CfVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -93,5 +93,4 @@ Resources:
           CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
-          Value: cf-public
-
+          Value: cf-public-server
