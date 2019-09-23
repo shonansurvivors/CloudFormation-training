@@ -57,28 +57,36 @@ Resources:
       RouteTableId: !Ref CfRouteTablePublic
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref CfInternetGateway
-  CfRouteTablePrivate:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref CfVPC
-      Tags:
-        - Key: Name
-          Value: cf-private
-  AssocciateRouteTablePrivate:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: !Ref CfRouteTablePrivate
-      SubnetId: !Ref CfSubnetPrivate
-  WebServer:
+  PublicServer:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: ami-0ff21806645c5e492
       InstanceType: t2.micro
-      KeyName: training20190921
+      Monitoring: true
       NetworkInterfaces:
         - AssociatePublicIpAddress: true
           DeviceIndex: 0
           SubnetId: !Ref CfSubnetPublic
+      SecurityGroupIds:
+        - !Ref SecurityGroupPublicServer
       Tags:
         - Key: Name
-          Value: cf-web
+          Value: cf-public
+  SecurityGroupPublicServer:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: public-server
+      GroupDescription: public-server
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
