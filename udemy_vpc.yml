@@ -34,7 +34,7 @@ Resources:
       Tags:
         - Key: Name
           Value: cf
-  AttachIgw:
+  AttachCfInternetGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       InternetGatewayId : !Ref CfInternetGateway
