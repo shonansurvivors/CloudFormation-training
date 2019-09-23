@@ -63,10 +63,7 @@ Resources:
       ImageId: ami-0ff21806645c5e492
       InstanceType: t2.micro
       Monitoring: true
-      NetworkInterfaces:
-        - AssociatePublicIpAddress: true
-          DeviceIndex: 0
-          SubnetId: !Ref CfSubnetPublic
+      SubnetId: !Ref CfSubnetPublic
       SecurityGroupIds:
         - !Ref SecurityGroupPublicServer
       Tags:
