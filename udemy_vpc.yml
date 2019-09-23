@@ -91,3 +91,37 @@ Resources:
       Tags:
         - Key: Name
           Value: cf-public-server
+  PrivateServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0ff21806645c5e492
+      InstanceType: t2.micro
+      Monitoring: true
+      SubnetId: !Ref CfSubnetPrivate
+      SecurityGroupIds:
+        - !Ref SecurityGroupPublicServer
+      Tags:
+        - Key: Name
+          Value: cf-private
+  SecurityGroupPrivateServer:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: cf-private-server
+      GroupDescription: cf-private-server
+      VpcId: !Ref CfVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: cf-private-server
