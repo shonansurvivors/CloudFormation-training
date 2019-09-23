@@ -10,7 +10,6 @@ Resources:
           Value: cf-vpc
   CfSubnetPublic:
     Type: AWS::EC2::Subnet
-    DependsOn: CfVPC
     Properties:
       CidrBlock: 10.1.5.0/24
       MapPublicIpOnLaunch: 'true'
@@ -21,7 +20,6 @@ Resources:
           Value: cf-public
   CfSubnetPrivate:
     Type: AWS::EC2::Subnet
-    DependsOn: CfVPC
     Properties:
       CidrBlock: 10.1.10.0/24
       MapPublicIpOnLaunch: 'false'
