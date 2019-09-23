@@ -51,7 +51,7 @@ Resources:
     Properties:
       RouteTableId: !Ref CfRouteTablePublic
       SubnetId: !Ref CfSubnetPublic
-  CreateRoutePublic:
+  CfRoutePublic:
     Type: AWS::EC2::Route
     Properties:
       RouteTableId: !Ref CfRouteTablePublic
