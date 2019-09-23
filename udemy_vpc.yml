@@ -7,7 +7,7 @@ Resources:
       Tags:
         -
           Key: Name
-          Value: cf-vpc
+          Value: cf
   CfSubnetPublic:
     Type: AWS::EC2::Subnet
     Properties:
