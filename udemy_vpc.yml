@@ -55,7 +55,7 @@ Resources:
     Type: AWS::EC2::Route
     Properties:
       RouteTableId: !Ref CfRouteTablePublic
-      DestinationCidrBlock: '0.0.0.0/0'
+      DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref CfInternetGateway
   CfRouteTablePrivate:
     Type: AWS::EC2::RouteTable
@@ -72,12 +72,12 @@ Resources:
   WebServer:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: 'ami-0ff21806645c5e492'
-      InstanceType: 't2.micro'
-      KeyName: 'training20190921'
+      ImageId: ami-0ff21806645c5e492
+      InstanceType: t2.micro
+      KeyName: training20190921
       NetworkInterfaces:
-        - AssociatePublicIpAddress: 'true'
-          DeviceIndex: '0'
+        - AssociatePublicIpAddress: true
+          DeviceIndex: 0
           SubnetId: !Ref CfSubnetPublic
       Tags:
         - Key: Name
