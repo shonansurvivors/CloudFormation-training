@@ -8,7 +8,7 @@ Resources:
         -
           Key: Name
           Value: cf
-  CfSubnetPublic:
+  CfPublicSubnet:
     Type: AWS::EC2::Subnet
     Properties:
       CidrBlock: 10.1.5.0/24
@@ -18,7 +18,7 @@ Resources:
       Tags:
         - Key: Name
           Value: cf-public
-  CfSubnetPrivate:
+  CfPrivateSubnet:
     Type: AWS::EC2::Subnet
     Properties:
       CidrBlock: 10.1.10.0/24
@@ -34,7 +34,7 @@ Resources:
       Tags:
         - Key: Name
           Value: cf
-  AttachCfInternetGateway:
+  CfAttachCfInternetGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       InternetGatewayId : !Ref CfInternetGateway
@@ -46,30 +46,30 @@ Resources:
       Tags:
         - Key: Name
           Value: cf-public
-  AssocciateRouteTablePublic:
+  CfAssocciateRouteTablePublic:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref CfRouteTablePublic
-      SubnetId: !Ref CfSubnetPublic
+      SubnetId: !Ref CfPublicSubnet
   CfRoutePublic:
     Type: AWS::EC2::Route
     Properties:
       RouteTableId: !Ref CfRouteTablePublic
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref CfInternetGateway
-  PublicServer:
+  CfPublicServer:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: ami-0ff21806645c5e492
       InstanceType: t2.micro
+      SubnetId: !Ref CfPublicSubnet
       Monitoring: true
-      SubnetId: !Ref CfSubnetPublic
       SecurityGroupIds:
-        - !Ref SecurityGroupPublicServer
+        - !Ref CfSecurityGroupPublicServer
       Tags:
         - Key: Name
           Value: cf-public
-  SecurityGroupPublicServer:
+  CfSecurityGroupPublicServer:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: cf-public-server
@@ -91,19 +91,19 @@ Resources:
       Tags:
         - Key: Name
           Value: cf-public-server
-  PrivateServer:
+  CfPrivateServer:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: ami-0ff21806645c5e492
       InstanceType: t2.micro
       Monitoring: true
-      SubnetId: !Ref CfSubnetPrivate
+      SubnetId: !Ref CfPrivateSubnet
       SecurityGroupIds:
-        - !Ref SecurityGroupPublicServer
+        - !Ref CfSecurityGroupPublicServer
       Tags:
         - Key: Name
           Value: cf-private
-  SecurityGroupPrivateServer:
+  CfSecurityGroupPrivateServer:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: cf-private-server
