@@ -65,11 +65,12 @@ Resources:
       SubnetId: !Ref CfPublicSubnet
       Monitoring: true
       SecurityGroupIds:
-        - !Ref CfSecurityGroupPublicServer
+        - !Ref CfSecurityGroupForPublicServer
+      KeyName: cf-key-pair
       Tags:
         - Key: Name
           Value: cf-public
-  CfSecurityGroupPublicServer:
+  CfSecurityGroupForPublicServer:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: cf-public-server
@@ -96,14 +97,15 @@ Resources:
     Properties:
       ImageId: ami-0ff21806645c5e492
       InstanceType: t2.micro
-      Monitoring: true
       SubnetId: !Ref CfPrivateSubnet
+      Monitoring: true
       SecurityGroupIds:
-        - !Ref CfSecurityGroupPublicServer
+        - !Ref CfSecurityGroupForPrivateServer
+      KeyName: cf-key-pair
       Tags:
         - Key: Name
           Value: cf-private
-  CfSecurityGroupPrivateServer:
+  CfSecurityGroupForPrivateServer:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: cf-private-server
