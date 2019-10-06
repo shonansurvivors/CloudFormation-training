@@ -97,6 +97,10 @@ Resources:
       Tags:
         - Key: Name
           Value: cf-public
+  CfElasticIp:
+    Type: AWS::EC2::EIP
+    Properties:
+      InstanceId: !Ref CfPublicServer
   CfSecurityGroupForPrivateServer:
     Type: AWS::EC2::SecurityGroup
     Properties:
