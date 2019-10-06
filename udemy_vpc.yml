@@ -3,65 +3,65 @@ Resources:
   CfVPC:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: 10.1.0.0/16
+      CidrBlock: 10.0.0.0/16
       Tags:
         -
           Key: Name
-          Value: cf
+          Value: CfVpc
   CfPublicSubnet:
     Type: AWS::EC2::Subnet
     Properties:
-      CidrBlock: 10.1.5.0/24
+      CidrBlock: 10.0.5.0/24
       MapPublicIpOnLaunch: true
       VpcId: !Ref CfVPC
       AvailabilityZone: ap-northeast-1a
       Tags:
         - Key: Name
-          Value: cf-public
+          Value: CfPublicSubnet
   CfPrivateSubnet:
     Type: AWS::EC2::Subnet
     Properties:
-      CidrBlock: 10.1.10.0/24
+      CidrBlock: 10.0.10.0/24
       MapPublicIpOnLaunch: false
       VpcId: !Ref CfVPC
       AvailabilityZone: ap-northeast-1c
       Tags:
         - Key: Name
-          Value: cf-private
+          Value: CfPrivateSubnet
   CfInternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
         - Key: Name
-          Value: cf
+          Value: CfInternetGateway
   CfAttachCfInternetGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       InternetGatewayId : !Ref CfInternetGateway
       VpcId: !Ref CfVPC
-  CfRouteTablePublic:
+  CfRouteTableForPublicSubnet:
     Type: AWS::EC2::RouteTable
     Properties:
       VpcId: !Ref CfVPC
       Tags:
         - Key: Name
-          Value: cf-public
-  CfAssocciateRouteTablePublic:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: !Ref CfRouteTablePublic
-      SubnetId: !Ref CfPublicSubnet
-  CfRoutePublic:
+          Value: CfRouteTableForPublicSubnet
+  CfRouteForPublicSubnet:
     Type: AWS::EC2::Route
     Properties:
-      RouteTableId: !Ref CfRouteTablePublic
+      RouteTableId: !Ref CfRouteTableForPublicSubnet
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref CfInternetGateway
+  CfAssocciateRouteTableForPublicSubnet:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref CfRouteTableForPublicSubnet
+      SubnetId: !Ref CfPublicSubnet
   CfSecurityGroupForPublicServer:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: cf-public-server
-      GroupDescription: cf-public-server
+      GroupName: CfSecurityGroupForPublicServer
+      GroupDescription: CfSecurityGroupForPublicServer
       VpcId: !Ref CfVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -78,60 +78,60 @@ Resources:
           CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
-          Value: cf-public-server
+          Value: CfSecurityGroupForPublicServer
   CfPublicServer:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: ami-0ff21806645c5e492
       InstanceType: t2.micro
+      KeyName: cf-key-pair
 #      SubnetId: !Ref CfPublicSubnet
 #      SecurityGroupIds:
 #        - !Ref CfSecurityGroupForPublicServer
       NetworkInterfaces:
-        - DeviceIndex : 0 # Property DeviceIndex cannot be empty.
-          AssociatePublicIpAddress: true
-          SubnetId: !Ref CfPublicSubnet # Network interfaces and an instance-level subnet ID may not be specified on the same request
+        - SubnetId: !Ref CfPublicSubnet # Network interfaces and an instance-level subnet ID may not be specified on the same request
           GroupSet:
             - !Ref CfSecurityGroupForPublicServer # Network interfaces and an instance-level security groups may not be specified on the same request
-      KeyName: cf-key-pair
+          AssociatePublicIpAddress: true
+          DeviceIndex : 0 # Property DeviceIndex cannot be empty.
       Tags:
         - Key: Name
-          Value: cf-public
-  CfElasticIp:
+          Value: CfPublicServer
+  CfElasticIpForPublicServer:
     Type: AWS::EC2::EIP
     Properties:
       InstanceId: !Ref CfPublicServer
   CfSecurityGroupForPrivateServer:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: cf-private-server
-      GroupDescription: cf-private-server
+      GroupName: CfSecurityGroupForPrivateServer
+      GroupDescription: CfSecurityGroupForPrivateServer
       VpcId: !Ref CfVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: 0.0.0.0/0
+          SourceSecurityGroupId: !Ref CfSecurityGroupForPublicServer
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
-          CidrIp: 0.0.0.0/0
+          SourceSecurityGroupId: !Ref CfSecurityGroupForPublicServer
         - IpProtocol: tcp
           FromPort: 443
           ToPort: 443
-          CidrIp: 0.0.0.0/0
+          SourceSecurityGroupId: !Ref CfSecurityGroupForPublicServer
       Tags:
         - Key: Name
-          Value: cf-private-server
+          Value: CfSecurityGroupForPrivateServer
   CfPrivateServer:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: ami-0ff21806645c5e492
       InstanceType: t2.micro
+      KeyName: cf-key-pair
       SubnetId: !Ref CfPrivateSubnet
       SecurityGroupIds:
         - !Ref CfSecurityGroupForPrivateServer
-      KeyName: cf-key-pair
       Tags:
         - Key: Name
-          Value: cf-private
+          Value: CfPrivateServer
