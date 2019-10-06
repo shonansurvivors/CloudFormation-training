@@ -57,19 +57,6 @@ Resources:
       RouteTableId: !Ref CfRouteTablePublic
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref CfInternetGateway
-  CfPublicServer:
-    Type: AWS::EC2::Instance
-    Properties:
-      ImageId: ami-0ff21806645c5e492
-      InstanceType: t2.micro
-      SubnetId: !Ref CfPublicSubnet
-      Monitoring: true
-      SecurityGroupIds:
-        - !Ref CfSecurityGroupForPublicServer
-      KeyName: cf-key-pair
-      Tags:
-        - Key: Name
-          Value: cf-public
   CfSecurityGroupForPublicServer:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -92,19 +79,24 @@ Resources:
       Tags:
         - Key: Name
           Value: cf-public-server
-  CfPrivateServer:
+  CfPublicServer:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: ami-0ff21806645c5e492
       InstanceType: t2.micro
-      SubnetId: !Ref CfPrivateSubnet
-      Monitoring: true
-      SecurityGroupIds:
-        - !Ref CfSecurityGroupForPrivateServer
+#      SubnetId: !Ref CfPublicSubnet
+#      SecurityGroupIds:
+#        - !Ref CfSecurityGroupForPublicServer
+      NetworkInterfaces:
+        - DeviceIndex : 0 # Property DeviceIndex cannot be empty.
+          AssociatePublicIpAddress: true
+          SubnetId: !Ref CfPublicSubnet # Network interfaces and an instance-level subnet ID may not be specified on the same request
+          GroupSet:
+            - !Ref CfSecurityGroupForPublicServer # Network interfaces and an instance-level security groups may not be specified on the same request
       KeyName: cf-key-pair
       Tags:
         - Key: Name
-          Value: cf-private
+          Value: cf-public
   CfSecurityGroupForPrivateServer:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -127,3 +119,15 @@ Resources:
       Tags:
         - Key: Name
           Value: cf-private-server
+  CfPrivateServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0ff21806645c5e492
+      InstanceType: t2.micro
+      SubnetId: !Ref CfPrivateSubnet
+      SecurityGroupIds:
+        - !Ref CfSecurityGroupForPrivateServer
+      KeyName: cf-key-pair
+      Tags:
+        - Key: Name
+          Value: cf-private
