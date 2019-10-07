@@ -112,14 +112,6 @@ Resources:
           FromPort: 22
           ToPort: 22
           SourceSecurityGroupId: !Ref CfSecurityGroupForPublicServer
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          SourceSecurityGroupId: !Ref CfSecurityGroupForPublicServer
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          SourceSecurityGroupId: !Ref CfSecurityGroupForPublicServer
       Tags:
         - Key: Name
           Value: CfSecurityGroupForPrivateServer
